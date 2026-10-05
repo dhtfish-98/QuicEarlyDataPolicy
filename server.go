@@ -12,7 +12,7 @@ import (
 )
 
 const MaxRequestBytes = 4096
-const Version = "0.1.0"
+const Version = "0.1.1"
 
 func observedPhase(conn *quic.Conn) Phase {
 	phase := Phase{Used0RTT: conn.ConnectionState().Used0RTT}

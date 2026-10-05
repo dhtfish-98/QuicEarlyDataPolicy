@@ -31,7 +31,7 @@ jobs:
           go test -race ./... -count=1
           go build -o Build/bin/quic-early-policy ./cmd/quic-early-policy
           go build -o Build/bin/quic-early-client ./cmd/quic-early-client
-          test "$(Build/bin/quic-early-policy -version)" = '0.1.0'
+          test "$(Build/bin/quic-early-policy -version)" = '0.1.1'
       - uses: actions/upload-artifact@v4
         with:
           name: validation-${{ github.sha }}

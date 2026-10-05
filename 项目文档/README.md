@@ -1,6 +1,8 @@
-# QuicEarlyDataPolicy 0.1.0
+# QuicEarlyDataPolicy 0.1.1
 
 Author: **dhtfish98**
+
+Version 0.1.1 updates release metadata and bundles the exact licenses for compiled dependencies; the application policy and replay experiment are unchanged from 0.1.0. The published 0.1.0 release remains a historical artifact.
 
 This is an independently written, loopback-first QUIC application policy demonstration. A real `quic-go` server accepts 0-RTT streams, but the application permits only the `read` operation before handshake confirmation. The `increment` operation is rejected on every connection that used 0-RTT, even if that connection's handshake completes later. A fresh, fully confirmed 1-RTT connection can increment the in-memory value.
 
