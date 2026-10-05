@@ -1,0 +1,42 @@
+name: validation
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  live-quic:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Verify pinned dependency and live replay policy
+        shell: bash
+        env:
+          GOCACHE: ${{ github.workspace }}/Build/gocache
+          GOMODCACHE: ${{ github.workspace }}/Build/modcache
+          GOTMPDIR: ${{ github.workspace }}/Build/tmp
+          QEDP_EVIDENCE_PATH: ${{ github.workspace }}/Build/live_evidence.json
+        run: |
+          set -euo pipefail
+          mkdir -p Build/gocache Build/modcache Build/tmp Build/bin
+          go mod download
+          go mod verify
+          test "$(go list -m -f '{{.Version}}' github.com/quic-go/quic-go)" = 'v0.63.1-0.20261005005602-431fe2e3946b'
+          go test -race ./... -count=1
+          go build -o Build/bin/quic-early-policy ./cmd/quic-early-policy
+          go build -o Build/bin/quic-early-client ./cmd/quic-early-client
+          test "$(Build/bin/quic-early-policy -version)" = '0.1.0'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: validation-${{ github.sha }}
+          path: |
+            Build/live_evidence.json
+            Build/bin/quic-early-policy
+            Build/bin/quic-early-client
+          if-no-files-found: error
